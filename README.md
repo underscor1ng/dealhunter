@@ -9,7 +9,7 @@ Most people searching for a home in don't know that some of those homes can be a
 
 What Is This?
 
-Deal Hunter is a one-of-a-kind search tool built specifically for New Jersey that surfaces homes where the seller is open to **creative terms** — meaning you may be able to step into their existing mortgage, negotiate payments directly, or get into a home with far less friction than the traditional route requires.
+Deal Hunter is a one-of-a-kind search tool built specifically for you and it surfaces homes where the seller is open to **creative terms** — meaning you may be able to step into their existing mortgage, negotiate payments directly, or get into a home with far less friction than the traditional route requires.
 
 It searches across every major listing platform at once and brings back only what matters: actual property listings, nothing else.
 
@@ -20,7 +20,7 @@ Who It's For
 - First-time buyers who can't qualify for a traditional mortgage right now
 - Buyers tired of competing with cash offers and losing
 - Investors looking for below-market entry points and flexible deal structures
-- Anyone who wants to own a home in NJ without starting from scratch at 6–7% interest rates
+- Anyone who wants to own a home in without starting from scratch at 6–7% interest rates
 
 ---
 
