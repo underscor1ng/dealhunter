@@ -1,313 +1,542 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NJ Deal Hunter Pro</title>
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet">
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root,[data-theme="light"]{
-      --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;--color-surface-offset:#f3f0ec;--color-divider:#dcd9d5;--color-border:#d4d1ca;--color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;--color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-highlight:#cedcd8;--color-success:#437a22;--color-warning:#964219;--color-gold:#d19900;--color-orange:#da7101;--color-blue:#006494;--color-purple:#7a39bb;--color-error:#a12c7b;--shadow-sm:0 1px 2px oklch(0.2 0.01 80 / 0.06);--shadow-md:0 4px 12px oklch(0.2 0.01 80 / 0.08);--shadow-lg:0 12px 32px oklch(0.2 0.01 80 / 0.12);--radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.75rem;--radius-xl:1rem;--radius-full:9999px;--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;--font-display:'Cabinet Grotesk',sans-serif;--font-body:'Satoshi',sans-serif;--text-xs:clamp(.75rem,.7rem + .25vw,.875rem);--text-sm:clamp(.875rem,.8rem + .35vw,1rem);--text-base:clamp(1rem,.95rem + .25vw,1.125rem);--text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);--text-xl:clamp(1.5rem,1.2rem + 1.25vw,2rem);--transition:180ms cubic-bezier(.16,1,.3,1)
-    }
-    [data-theme="dark"]{
-      --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;--color-surface-offset:#1d1c1a;--color-divider:#262523;--color-border:#393836;--color-text:#cdccca;--color-text-muted:#979694;--color-text-faint:#5a5957;--color-primary:#4f98a3;--color-primary-hover:#227f8b;--color-primary-highlight:#313b3b;--color-success:#6daa45;--color-warning:#bb653b;--color-gold:#e8af34;--color-orange:#fdab43;--color-blue:#5591c7;--color-purple:#a86fdf;--color-error:#d163a7;--shadow-sm:0 1px 2px oklch(0 0 0 / 0.2);--shadow-md:0 4px 12px oklch(0 0 0 / 0.3);--shadow-lg:0 12px 32px oklch(0 0 0 / 0.4)
-    }
-    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-    body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);line-height:1.6;background:var(--color-bg);color:var(--color-text)}
-    button,input,select{font:inherit;color:inherit}
-    button{cursor:pointer;border:none;background:none}
-    a{text-decoration:none;color:inherit}
-    .app{display:grid;grid-template-rows:auto 1fr;min-height:100dvh}
-    .header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);background:var(--color-surface);border-bottom:1px solid var(--color-border);position:sticky;top:0;z-index:20}
-    .brand{display:flex;align-items:center;gap:var(--space-3)}
-    .brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--color-primary),var(--color-blue));display:grid;place-items:center;color:white;font-weight:900;box-shadow:var(--shadow-md)}
-    .brand-copy h1{font-family:var(--font-display);font-size:var(--text-lg);line-height:1;font-weight:800}
-    .brand-copy p{font-size:var(--text-xs);color:var(--color-text-muted)}
-    .theme-toggle{padding:var(--space-2);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface-2)}
-    .layout{display:grid;grid-template-columns:340px 1fr;min-height:0}
-    .sidebar{padding:var(--space-5);background:var(--color-surface);border-right:1px solid var(--color-border);overflow:auto}
-    .content{padding:var(--space-6);overflow:auto}
-    .panel{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
-    .intro{padding:var(--space-4);margin-bottom:var(--space-4);background:oklch(from var(--color-primary) l c h / .08);border:1px solid oklch(from var(--color-primary) l c h / .18);border-radius:var(--radius-lg);color:var(--color-text-muted)}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-5)}
-    .stat{padding:var(--space-4);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg)}
-    .stat strong{display:block;font-family:var(--font-display);font-size:var(--text-xl);color:var(--color-primary)}
-    .stat span{font-size:var(--text-xs);color:var(--color-text-muted)}
-    .group{margin-bottom:var(--space-5)}
-    .group h3{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--color-text-faint);margin-bottom:var(--space-3)}
-    .field{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-3)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
-    input,select{width:100%;padding:.8rem .9rem;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2)}
-    .checks{display:grid;gap:var(--space-2)}
-    .check{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface-2)}
-    .check input{width:auto}
-    .actions{display:grid;gap:var(--space-2);margin-top:var(--space-4)}
-    .btn{padding:.85rem 1rem;border-radius:var(--radius-lg);font-weight:700;text-align:center}
-    .btn-primary{background:var(--color-primary);color:white}
-    .btn-secondary{background:var(--color-surface-2);border:1px solid var(--color-border)}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap}
-    .toolbar h2{font-family:var(--font-display);font-size:var(--text-lg)}
-    .toolbar-meta{font-size:var(--text-sm);color:var(--color-text-muted)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));gap:var(--space-4)}
-    .card{padding:var(--space-4);display:grid;gap:var(--space-3);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
-    .card-top{display:flex;justify-content:space-between;gap:var(--space-2);align-items:flex-start}
-    .card h4{font-size:var(--text-base);line-height:1.3}
-    .badges{display:flex;flex-wrap:wrap;gap:var(--space-1)}
-    .badge{font-size:var(--text-xs);padding:.2rem .55rem;border-radius:999px;border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text-muted)}
-    .badge.high{background:oklch(from var(--color-success) l c h / .12);color:var(--color-success);border-color:oklch(from var(--color-success) l c h / .2)}
-    .badge.google{background:oklch(from var(--color-blue) l c h / .12);color:var(--color-blue)}
-    .badge.zillow{background:oklch(from var(--color-warning) l c h / .12);color:var(--color-warning)}
-    .badge.redfin{background:oklch(from var(--color-error) l c h / .12);color:var(--color-error)}
-    .badge.realtor{background:oklch(from var(--color-success) l c h / .12);color:var(--color-success)}
-    .badge.craigslist{background:oklch(from var(--color-purple) l c h / .12);color:var(--color-purple)}
-    .badge.facebook{background:oklch(from var(--color-blue) l c h / .12);color:var(--color-blue)}
-    .badge.biggerpockets{background:oklch(from var(--color-gold) l c h / .12);color:var(--color-gold)}
-    .desc{font-size:var(--text-sm);color:var(--color-text-muted)}
-    .query{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:var(--space-3);background:var(--color-surface-offset);border-radius:var(--radius-md);border:1px solid var(--color-border);word-break:break-word;color:var(--color-text-muted)}
-    .card-actions{display:flex;gap:var(--space-2)}
-    .open{flex:1;padding:.75rem 1rem;border-radius:var(--radius-md);background:var(--color-primary);color:white;text-align:center;font-weight:700}
-    .copy{padding:.75rem 1rem;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2)}
-    .section-label{display:flex;align-items:center;gap:var(--space-3);margin:var(--space-6) 0 var(--space-4)}
-    .section-label::before,.section-label::after{content:"";height:1px;background:var(--color-divider);flex:1}
-    .section-label span{font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-faint)}
-    .mini{font-size:var(--text-xs);color:var(--color-text-faint)}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NJ Deal Hunter</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#171614;--surface:#1c1b19;--surface2:#201f1d;--surfaceoff:#252422;
+--border:#393836;--divider:#2a2927;
+--text:#cdccca;--muted:#979694;--faint:#5a5957;
+--primary:#4f98a3;--primary-h:#227f8b;
+--success:#6daa45;--gold:#e8af34;--orange:#fdab43;
+--warning:#bb653b;--error:#dd6974;--blue:#5591c7;--purple:#a86fdf;
+--shadow:0 4px 16px oklch(0 0 0/.3);
+--r:0.5rem;--rl:0.75rem;--rxl:1rem;--rfull:999px;
+--sp1:.25rem;--sp2:.5rem;--sp3:.75rem;--sp4:1rem;--sp5:1.25rem;--sp6:1.5rem;--sp8:2rem;--sp12:3rem;
+--font-d:"Cabinet Grotesk",sans-serif;--font-b:"Satoshi",sans-serif;
+}
+[data-theme="light"]{
+--bg:#f7f6f2;--surface:#f9f8f5;--surface2:#fbfbf9;--surfaceoff:#f3f0ec;
+--border:#d4d1ca;--divider:#dcd9d5;
+--text:#28251d;--muted:#7a7974;--faint:#bab9b4;
+--primary:#01696f;--primary-h:#0c4e54;
+--success:#437a22;--gold:#c18800;--orange:#da7101;
+--warning:#964219;--error:#c0392b;--blue:#006494;--purple:#7a39bb;
+--shadow:0 4px 16px oklch(0.2 0.01 80/.1);
+}
+html{-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;font-family:var(--font-b);background:var(--bg);color:var(--text);line-height:1.6}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+img,svg{display:block}
 
-    .limit-banner{margin:var(--space-3) 0 0;padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);font-size:var(--text-xs);line-height:1.5;display:flex;flex-direction:column;gap:var(--space-2)}
-    .limit-on{background:oklch(from var(--color-gold) l c h / .1);border:1px solid oklch(from var(--color-gold) l c h / .25);color:var(--color-text-muted)}
-    .limit-off{background:oklch(from var(--color-success) l c h / .1);border:1px solid oklch(from var(--color-success) l c h / .25);color:var(--color-text-muted)}
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
-    .toggle-label{font-weight:700;font-size:var(--text-sm)}
-    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
-    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
-    .toggle-track{position:absolute;inset:0;background:var(--color-border);border-radius:999px;cursor:pointer;transition:background var(--transition)}
-    .toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform var(--transition)}
-    .toggle-switch input:checked + .toggle-track{background:var(--color-gold)}
-    .toggle-switch input:checked + .toggle-track::after{transform:translateX(20px)}
-    @media (max-width: 900px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid var(--color-border)}.stats{grid-template-columns:repeat(2,1fr)}.content,.sidebar{padding:var(--space-4)}}
-  </style>
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp6);background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:var(--sp3)}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--blue));display:grid;place-items:center;font-family:var(--font-d);font-weight:900;font-size:.9rem;color:#fff}
+.brand h1{font-family:var(--font-d);font-size:1.15rem;font-weight:800;line-height:1}
+.brand p{font-size:.75rem;color:var(--muted)}
+.hdr-right{display:flex;align-items:center;gap:var(--sp3)}
+.live{display:flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--success);padding:.3rem .7rem;border-radius:var(--rfull);background:oklch(from var(--success) l c h/.12)}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.theme-btn{padding:.5rem;border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);color:var(--muted)}
+
+/* LAYOUT */
+.wrap{display:grid;grid-template-columns:300px 1fr}
+
+/* SIDEBAR */
+.side{padding:var(--sp5);background:var(--surface);border-right:1px solid var(--border);height:calc(100vh - 57px);position:sticky;top:57px;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp5)}
+.sl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:var(--sp3)}
+.field{display:flex;flex-direction:column;gap:var(--sp2);margin-bottom:var(--sp3)}
+.field label{font-size:.8rem;color:var(--muted)}
+.field input,.field select{padding:.65rem .85rem;border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);width:100%;font-size:.875rem;transition:border-color .15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--primary)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
+.div{height:1px;background:var(--divider)}
+.checks{display:flex;flex-direction:column;gap:var(--sp2)}
+.chk{display:flex;align-items:center;gap:var(--sp2);padding:.55rem .75rem;border:1px solid transparent;border-radius:var(--r);cursor:pointer;font-size:.875rem;user-select:none;transition:all .15s}
+.chk:hover{background:var(--surfaceoff)}
+.chk.on{background:oklch(from var(--primary) l c h/.1);border-color:oklch(from var(--primary) l c h/.3)}
+.chk input{accent-color:var(--primary);width:15px;height:15px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-g{background:var(--success)}.dot-b{background:var(--blue)}.dot-o{background:var(--orange)}.dot-gold{background:var(--gold)}.dot-r{background:var(--error)}
+.update-btn{width:100%;padding:.9rem;border-radius:var(--rl);background:var(--primary);color:#fff;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:background .15s}
+.update-btn:hover{background:var(--primary-h)}
+.update-btn:active{transform:scale(.98)}
+
+/* MAIN */
+.main{padding:var(--sp6);overflow-y:auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp4);margin-bottom:var(--sp6)}
+.stat{padding:var(--sp4);background:var(--surface);border:1px solid var(--border);border-radius:var(--rl)}
+.stat strong{font-family:var(--font-d);font-size:1.6rem;font-weight:800;color:var(--primary);display:block;line-height:1}
+.stat span{font-size:.72rem;color:var(--muted)}
+.section-div{display:flex;align-items:center;gap:var(--sp3);margin:var(--sp8) 0 var(--sp4)}
+.section-div::before,.section-div::after{content:"";height:1px;background:var(--divider);flex:1}
+.section-div span{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(380px,100%),1fr));gap:var(--sp4)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rxl);padding:var(--sp5);display:flex;flex-direction:column;gap:var(--sp3);box-shadow:var(--shadow)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--sp3)}
+.card h4{font-size:.95rem;font-weight:700;line-height:1.3}
+.badges{display:flex;flex-wrap:wrap;gap:.25rem}
+.bdg{font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:var(--rfull);background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.bdg.high{background:oklch(from var(--success) l c h/.12);color:var(--success);border-color:oklch(from var(--success) l c h/.2)}
+.bdg.google{background:oklch(from var(--blue) l c h/.12);color:var(--blue)}
+.bdg.zillow{background:oklch(from var(--warning) l c h/.12);color:var(--warning)}
+.bdg.redfin{background:oklch(from var(--error) l c h/.12);color:var(--error)}
+.bdg.realtor{background:oklch(from var(--success) l c h/.12);color:var(--success)}
+.bdg.craigslist{background:oklch(from var(--purple) l c h/.12);color:var(--purple)}
+.bdg.facebook{background:oklch(from var(--blue) l c h/.12);color:var(--blue)}
+.bdg.biggerpockets{background:oklch(from var(--gold) l c h/.12);color:var(--gold)}
+.card-desc{font-size:.82rem;color:var(--muted)}
+.qblock{font-family:ui-monospace,monospace;font-size:.7rem;padding:var(--sp3);background:var(--surfaceoff);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);word-break:break-word;line-height:1.5}
+.card-btns{display:flex;gap:var(--sp2)}
+.open-btn{flex:1;padding:.7rem 1rem;border-radius:var(--r);background:var(--primary);color:#fff;font-weight:700;font-size:.85rem;text-align:center;text-decoration:none;transition:background .15s}
+.open-btn:hover{background:var(--primary-h)}
+.copy-btn{padding:.7rem .9rem;border-radius:var(--r);border:1px solid var(--border);background:var(--surface2);font-size:.85rem;color:var(--muted);transition:all .15s}
+.copy-btn:hover{background:var(--surfaceoff);color:var(--text)}
+.copy-btn.done{color:var(--success);border-color:var(--success)}
+
+/* payment toggle */
+.pay-toggle{padding:var(--sp3) var(--sp4);border-radius:var(--rl);font-size:.78rem;line-height:1.5;color:var(--muted)}
+.pay-toggle.on{background:oklch(from var(--gold) l c h/.1);border:1px solid oklch(from var(--gold) l c h/.25)}
+.pay-toggle.off{background:oklch(from var(--success) l c h/.1);border:1px solid oklch(from var(--success) l c h/.25)}
+.pay-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp2)}
+.pay-row strong{font-size:.82rem}
+.sw{position:relative;width:42px;height:22px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw-track{position:absolute;inset:0;background:var(--border);border-radius:999px;cursor:pointer;transition:background .18s}
+.sw-track::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s}
+.sw input:checked+.sw-track{background:var(--gold)}
+.sw input:checked+.sw-track::after{transform:translateX(20px)}
+
+@media(max-width:768px){
+.wrap{grid-template-columns:1fr}
+.side{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)}
+.stats{grid-template-columns:repeat(2,1fr)}
+.hdr{padding:var(--sp3) var(--sp4)}
+}
+</style>
 </head>
 <body>
-<div class="app">
-  <header class="header">
-    <div class="brand">
-      <div class="brand-mark">NJ</div>
-      <div class="brand-copy">
-        <h1>NJ Deal Hunter Pro</h1>
-        <p>Creative finance, payment takeover, and deep property search builder</p>
+<div>
+<header class="hdr">
+  <div class="brand">
+    <div class="logo">NJ</div>
+    <div>
+      <h1>NJ Deal Hunter</h1>
+      <p>Assumable &amp; Creative Finance Search</p>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="live">Live</span>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="side">
+
+    <div>
+      <div class="sl">Location</div>
+      <div class="field"><label>State / Region</label><input id="fState" placeholder="New Jersey"></div>
+      <div class="two">
+        <div class="field"><label>City or County</label><input id="fCity" placeholder="e.g. Newark"></div>
+        <div class="field"><label>ZIP Code</label><input id="fZip" placeholder="e.g. 07052"></div>
       </div>
     </div>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
-  </header>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="group">
-        <h3>Search Area</h3>
-        <div class="field"><label>State / area</label><input id="location" value="New Jersey"></div>
-        <div class="row">
-          <div class="field"><label>City / county</label><input id="city" placeholder="Newark, Essex County"></div>
-          <div class="field"><label>ZIP</label><input id="zip" placeholder="07054"></div>
-        </div>
-      </div>
-      <div class="group">
-        <h3>Budget Filters</h3>
-        <div class="row">
-          <div class="field"><label>Max monthly payment</label><input id="maxPayment" type="number" placeholder="2500"></div>
-          <div class="field"><label>Max price</label><input id="maxPrice" type="number" placeholder="450000"></div>
-        </div>
-        <div class="row">
-          <div class="field"><label>Min price</label><input id="minPrice" type="number" placeholder="100000"></div>
-          <div class="field"><label>Down payment max</label><input id="maxDown" type="number" placeholder="30000"></div>
-        </div>
-      </div>
 
-      <div class="limit-on limit-banner" id="payLimitBanner">
-        <div class="toggle-row">
-          <span class="toggle-label" id="payToggleLabel">💡 Payment keyword injection: ON</span>
-          <label class="toggle-switch" title="Toggle payment phrase injection">
-            <input type="checkbox" id="payInjectToggle" checked>
-            <span class="toggle-track"></span>
-          </label>
-        </div>
-        <span id="payToggleExplain">Monthly payment amounts will be injected as keyword phrases into every Google search query. <strong>Important limit:</strong> listing sites (Zillow, Redfin, etc.) do not expose "monthly payment" as a structured filter field — so this works by searching description text for matching phrases. Results will vary. Turn OFF to run clean searches and use each site's own native price/payment filters manually.</span>
+    <div class="div"></div>
+
+    <div>
+      <div class="sl">Budget</div>
+      <div class="two">
+        <div class="field"><label>Max monthly ($)</label><input id="fPayment" type="number" placeholder=""></div>
+        <div class="field"><label>Max price ($)</label><input id="fMaxPrice" type="number" placeholder=""></div>
       </div>
-      <div class="group">
-        <h3>Property Filters</h3>
-        <div class="row">
-          <div class="field"><label>Beds minimum</label><select id="beds"><option value="">Any</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
-          <div class="field"><label>Baths minimum</label><select id="baths"><option value="">Any</option><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
-        </div>
-        <div class="row">
-          <div class="field"><label>Property type</label><select id="ptype"><option value="">Any</option><option selected>House</option><option>Condo</option><option>Townhouse</option><option>Multi-family</option><option>Land</option></select></div>
-          <div class="field"><label>Lot / sqft keyword</label><input id="sizeKeyword" placeholder="large yard, 2000 sqft"></div>
-        </div>
+      <div class="two">
+        <div class="field"><label>Min price ($)</label><input id="fMinPrice" type="number" placeholder=""></div>
+        <div class="field"><label>Max down ($)</label><input id="fDown" type="number" placeholder=""></div>
       </div>
-      <div class="group">
-        <h3>Creative Finance Modes</h3>
-        <div class="checks" id="typesWrap">
-          <label class="check"><input type="checkbox" value="assumable" checked> Assumable mortgage</label>
-          <label class="check"><input type="checkbox" value="subjectto" checked> Subject-to / subto</label>
-          <label class="check"><input type="checkbox" value="ownerfinance" checked> Owner / seller finance</label>
-          <label class="check"><input type="checkbox" value="rentoown" checked> Rent-to-own / lease option</label>
-          <label class="check"><input type="checkbox" value="distressed" checked> Distressed / motivated</label>
+      <div class="pay-toggle on" id="payBanner">
+        <div class="pay-row">
+          <strong id="payLabel">💡 Inject payment into searches: ON</strong>
+          <label class="sw"><input type="checkbox" id="payToggle" checked><span class="sw-track"></span></label>
         </div>
+        <span id="payExplain">Your max monthly amount will be added as a keyword phrase to searches. Note: listing sites don't have a built-in payment filter — so this searches listing description text for matching phrases. Turn OFF for clean native searches.</span>
       </div>
-      <div class="group">
-        <h3>Listing Sources</h3>
-        <div class="checks" id="sourcesWrap">
-          <label class="check"><input type="checkbox" value="google" checked> Google</label>
-          <label class="check"><input type="checkbox" value="zillow" checked> Zillow</label>
-          <label class="check"><input type="checkbox" value="redfin" checked> Redfin</label>
-          <label class="check"><input type="checkbox" value="realtor" checked> Realtor.com</label>
-          <label class="check"><input type="checkbox" value="craigslist" checked> Craigslist</label>
-          <label class="check"><input type="checkbox" value="facebook" checked> Facebook Marketplace</label>
-          <label class="check"><input type="checkbox" value="biggerpockets" checked> BiggerPockets</label>
+    </div>
+
+    <div class="div"></div>
+
+    <div>
+      <div class="sl">Property</div>
+      <div class="two">
+        <div class="field"><label>Min beds</label>
+          <select id="fBeds"><option value="">Any</option><option>1+</option><option>2+</option><option>3+</option><option>4+</option><option>5+</option></select>
+        </div>
+        <div class="field"><label>Min baths</label>
+          <select id="fBaths"><option value="">Any</option><option>1+</option><option>2+</option><option>3+</option></select>
         </div>
       </div>
-      <div class="group">
-        <h3>Specific Search Boosters</h3>
-        <div class="field"><label>Must-have keywords</label><input id="mustHave" placeholder="garage, basement, as-is, investor special"></div>
-        <div class="field"><label>Exclude keywords</label><input id="exclude" placeholder="55+, senior, mobile home"></div>
-        <div class="field"><label>Custom financing phrase</label><input id="customPhrase" placeholder="take over existing mortgage"></div>
+      <div class="field"><label>Property type</label>
+        <select id="fType"><option value="">Any</option><option>House</option><option>Condo</option><option>Townhouse</option><option>Multi-family</option></select>
       </div>
-      <div class="actions">
-        <button class="btn btn-primary" id="buildBtn">Build Searches</button>
-        <button class="btn btn-secondary" id="openAllBtn">Open Top 8</button>
-        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="div"></div>
+
+    <div>
+      <div class="sl">Deal Type</div>
+      <div class="checks" id="dealTypes">
+        <label class="chk on"><input type="checkbox" value="assumable" checked><span class="dot dot-g"></span>Assumable Mortgage</label>
+        <label class="chk on"><input type="checkbox" value="subjectto" checked><span class="dot dot-b"></span>Subject-To / SubTo</label>
+        <label class="chk on"><input type="checkbox" value="ownerfinance" checked><span class="dot dot-o"></span>Owner / Seller Finance</label>
+        <label class="chk on"><input type="checkbox" value="rentoown" checked><span class="dot dot-gold"></span>Rent-to-Own / Lease Option</label>
+        <label class="chk on"><input type="checkbox" value="distressed" checked><span class="dot dot-r"></span>Distressed / Motivated</label>
       </div>
-      <p class="mini" style="margin-top:var(--space-3)">Use payment and price filters as keyword boosters. Some sites don't expose monthly payment as a structured field, so this app pushes payment phrases directly into listing-description searches.</p>
-    </aside>
-    <main class="content">
-      <div class="intro"><strong>Built for wide search freedom:</strong> this version adds budget, property, location, keyword, and creative-finance filters, then maps them into dozens of search queries across major listing networks and text-description searches where creative deals usually show up.</div>
-      <div class="stats">
-        <div class="stat"><strong id="statTotal">0</strong><span>Total searches</span></div>
-        <div class="stat"><strong id="statHigh">0</strong><span>High priority</span></div>
-        <div class="stat"><strong id="statSources">0</strong><span>Sources used</span></div>
-        <div class="stat"><strong id="statTypes">0</strong><span>Deal modes</span></div>
+    </div>
+
+    <div class="div"></div>
+
+    <div>
+      <div class="sl">Sources</div>
+      <div class="checks" id="sources">
+        <label class="chk on"><input type="checkbox" value="google" checked>Google</label>
+        <label class="chk on"><input type="checkbox" value="zillow" checked>Zillow</label>
+        <label class="chk on"><input type="checkbox" value="redfin" checked>Redfin</label>
+        <label class="chk on"><input type="checkbox" value="realtor" checked>Realtor.com</label>
+        <label class="chk on"><input type="checkbox" value="craigslist" checked>Craigslist</label>
+        <label class="chk on"><input type="checkbox" value="facebook" checked>Facebook Marketplace</label>
+        <label class="chk on"><input type="checkbox" value="biggerpockets" checked>BiggerPockets</label>
       </div>
-      <div class="toolbar">
-        <h2>Search Results</h2>
-        <div class="toolbar-meta" id="summaryLine">Build your search set.</div>
-      </div>
-      <div id="results"></div>
-    </main>
-  </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div>
+      <div class="sl">Keyword Boosters</div>
+      <div class="field"><label>Must include</label><input id="fMust" placeholder="e.g. garage, basement"></div>
+      <div class="field"><label>Exclude words</label><input id="fExclude" placeholder="e.g. 55+, mobile home"></div>
+      <div class="field"><label>Custom phrase</label><input id="fCustom" placeholder="e.g. take over existing mortgage"></div>
+    </div>
+
+    <button class="update-btn" id="updateBtn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Update Searches
+    </button>
+  </aside>
+
+  <main class="main">
+    <div class="stats">
+      <div class="stat"><strong id="sTotal">0</strong><span>Total searches</span></div>
+      <div class="stat"><strong id="sHigh">0</strong><span>High priority</span></div>
+      <div class="stat"><strong id="sSources">0</strong><span>Sources</span></div>
+      <div class="stat"><strong id="sTypes">0</strong><span>Deal types</span></div>
+    </div>
+    <div id="results"></div>
+  </main>
 </div>
+</div>
+
 <script>
-const $ = (id)=>document.getElementById(id);
-const stateDefaults = {location:'New Jersey',city:'',zip:'',maxPayment:'',maxPrice:'',minPrice:'',maxDown:'',beds:'3',baths:'2',ptype:'House',sizeKeyword:'',mustHave:'',exclude:'',customPhrase:''};
-const sourceLabels={google:'Google',zillow:'Zillow',redfin:'Redfin',realtor:'Realtor.com',craigslist:'Craigslist',facebook:'Facebook',biggerpockets:'BiggerPockets'};
-function themeInit(){const root=document.documentElement;let d=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';root.setAttribute('data-theme',d);$('themeToggle').onclick=()=>{d=d==='dark'?'light':'dark';root.setAttribute('data-theme',d)}}
-function getCheckedValues(wrapperId){return [...document.querySelectorAll(`#${wrapperId} input:checked`)].map(i=>i.value)}
-function money(v){if(!v)return '';return Number(v).toLocaleString()}
-function locationText(){const parts=[$('city').value.trim(), $('zip').value.trim(), $('location').value.trim()].filter(Boolean); return parts.join(' ')}
-function paymentPhrase(){
-  if(!$('payInjectToggle').checked) return '';
-  const p=$('maxPayment').value.trim(); if(!p) return '';
-  const n=money(p);
-  return `("$${p}/month" OR "$${n}/month" OR "$${p} monthly" OR "$${n} monthly" OR "payment under $${p}" OR "payment less than $${p}")`;}
-function pricePhrase(){const min=$('minPrice').value.trim(), max=$('maxPrice').value.trim(); let parts=[]; if(min) parts.push(`"$${money(min)}"`); if(max) parts.push(`"$${money(max)}" OR "under $${money(max)}" OR "below $${money(max)}"`); return parts.join(' ')}
-function propPhrase(){const bits=[]; if($('beds').value) bits.push(`"${$('beds').value}+ bed" OR "${$('beds').value} bedroom"`); if($('baths').value) bits.push(`"${$('baths').value}+ bath" OR "${$('baths').value} bathroom"`); if($('ptype').value) bits.push(`"${$('ptype').value}"`); if($('sizeKeyword').value.trim()) bits.push(`"${$('sizeKeyword').value.trim()}"`); return bits.join(' ')}
-function extrasPhrase(){const bits=[]; if($('mustHave').value.trim()) bits.push($('mustHave').value.trim().split(',').map(s=>`"${s.trim()}"`).join(' OR ')); if($('customPhrase').value.trim()) bits.push(`"${$('customPhrase').value.trim()}"`); if($('maxDown').value.trim()) bits.push(`("low down payment" OR "minimal down payment" OR "down payment $${money($('maxDown').value.trim())}" OR "$${money($('maxDown').value.trim())} down")`); return bits.join(' ')}
-function excludePhrase(){const raw=$('exclude').value.trim(); if(!raw) return ''; return raw.split(',').map(s=>`-${s.trim().replace(/\s+/g,'+')}`).join(' ')}
-function encodeGoogle(q){return `https://www.google.com/search?q=${encodeURIComponent(q)}`}
-function buildSearches(){
-  const loc=locationText() || 'New Jersey';
-  const pay=paymentPhrase(); const price=pricePhrase(); const prop=propPhrase(); const extra=extrasPhrase(); const neg=excludePhrase();
-  const types=getCheckedValues('typesWrap'); const sources=getCheckedValues('sourcesWrap');
-  const baseTail=[loc,pay,price,prop,extra,neg].filter(Boolean).join(' ');
-  const templates=[];
-  const add=(type,source,priority,title,desc,query,url,tags=[])=>templates.push({type,source,priority,title,desc,query,url,tags});
-  if(types.includes('assumable')){
-    add('assumable','google','high','Assumable master sweep','Broad assumable + FHA/VA/USDA scan across text descriptions',`(assumable OR "assumable mortgage" OR "mortgage assumption" OR "FHA assumable" OR "VA assumable" OR "USDA assumable") ${baseTail}`,encodeGoogle(`(assumable OR "assumable mortgage" OR "mortgage assumption" OR "FHA assumable" OR "VA assumable" OR "USDA assumable") ${baseTail}`),['assumable','FHA','VA']);
-    add('assumable','google','high','Low-rate 2020-2022 assumables','Targets cheap-rate loans most worth taking over',`("assumable mortgage" OR "low interest loan" OR "assumable rate") (2020 OR 2021 OR 2022) ${baseTail}`,encodeGoogle(`("assumable mortgage" OR "low interest loan" OR "assumable rate") (2020 OR 2021 OR 2022) ${baseTail}`),['2020-2022','low-rate']);
-    add('assumable','zillow','high','Zillow assumable text search','Uses Google site search to hit Zillow descriptions',`site:zillow.com (assumable OR "assumable mortgage") ${baseTail}`,encodeGoogle(`site:zillow.com (assumable OR "assumable mortgage") ${baseTail}`),['zillow']);
-    add('assumable','redfin','high','Redfin assumable text search','Searches Redfin pages where terms show in descriptions',`site:redfin.com (assumable OR "VA assumable" OR "FHA assumable") ${baseTail}`,encodeGoogle(`site:redfin.com (assumable OR "VA assumable" OR "FHA assumable") ${baseTail}`),['redfin']);
-    add('assumable','realtor','high','Realtor.com assumable scan','Searches Realtor descriptions for financing terms',`site:realtor.com assumable ${baseTail}`,encodeGoogle(`site:realtor.com assumable ${baseTail}`),['realtor']);
-  }
-  if(types.includes('subjectto')){
-    add('subjectto','google','high','Subject-to / takeover sweep','Catches direct payment-takeover phrasing',`("take over payments" OR "takeover payments" OR "assume payments" OR "subject to existing mortgage" OR subto OR "subject-to deal") ${baseTail}`,encodeGoogle(`("take over payments" OR "takeover payments" OR "assume payments" OR "subject to existing mortgage" OR subto OR "subject-to deal") ${baseTail}`),['subject-to','takeover']);
-    add('subjectto','craigslist','high','Craigslist payment takeover','High-yield manual source for creative finance',`"take over payments" OR "subject to" OR subto ${loc}`,`https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent(`take over payments ${$('city').value||''} ${$('zip').value||''}`)}`,['craigslist']);
-    add('subjectto','facebook','high','Facebook payment takeover','Marketplace search for takeover-style ads',`"take over payments" OR "subject to" ${baseTail}`,`https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent(`take over payments ${$('city').value||''}`)}`,['facebook']);
-    add('subjectto','zillow','med','Zillow subject-to text search','Looks for subject-to terms on Zillow pages',`site:zillow.com ("subject to" OR subto OR "take over payments") ${baseTail}`,encodeGoogle(`site:zillow.com ("subject to" OR subto OR "take over payments") ${baseTail}`),['zillow']);
-  }
-  if(types.includes('ownerfinance')){
-    add('ownerfinance','google','high','Owner finance sweep','Broad seller finance / no bank search',`("owner financing" OR "seller financing" OR "seller financed" OR "owner will finance" OR "seller carryback" OR "no bank approval" OR "no lender required") ${baseTail}`,encodeGoogle(`("owner financing" OR "seller financing" OR "seller financed" OR "owner will finance" OR "seller carryback" OR "no bank approval" OR "no lender required") ${baseTail}`),['owner-finance']);
-    add('ownerfinance','craigslist','high','Craigslist owner financing','Craigslist often has direct creative terms',`"owner financing" OR "seller financing" ${loc}`,`https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent(`owner financing ${$('city').value||''} ${$('zip').value||''}`)}`,['craigslist']);
-    add('ownerfinance','facebook','high','Facebook owner finance','Marketplace search for seller-carry style deals',`"owner financing" OR "seller financing" ${baseTail}`,`https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent(`owner financing ${$('city').value||''}`)}`,['facebook']);
-    add('ownerfinance','biggerpockets','high','BiggerPockets creative finance','Investor source for off-market creative structures',`site:biggerpockets.com ("owner financing" OR "subject to" OR assumable) ${baseTail}`,encodeGoogle(`site:biggerpockets.com ("owner financing" OR "subject to" OR assumable) ${baseTail}`),['biggerpockets']);
-  }
-  if(types.includes('rentoown')){
-    add('rentoown','google','high','Rent-to-own sweep','Best second path when assumption is not available',`("rent to own" OR "rent-to-own" OR "lease option" OR "lease purchase" OR "option to buy" OR "lease with option") ${baseTail}`,encodeGoogle(`("rent to own" OR "rent-to-own" OR "lease option" OR "lease purchase" OR "option to buy" OR "lease with option") ${baseTail}`),['rent-to-own']);
-    add('rentoown','craigslist','high','Craigslist lease option','High signal source for lease-option wording',`"rent to own" OR "lease option" ${loc}`,`https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent(`rent to own lease option ${$('city').value||''} ${$('zip').value||''}`)}`,['craigslist']);
-    add('rentoown','facebook','med','Facebook rent-to-own','Marketplace search for lease-option deals',`"rent to own" OR "lease option" ${baseTail}`,`https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent(`rent to own ${$('city').value||''}`)}`,['facebook']);
-    add('rentoown','realtor','med','Realtor lease option text search','Searches Realtor pages for lease-option mentions',`site:realtor.com ("rent to own" OR "lease option") ${baseTail}`,encodeGoogle(`site:realtor.com ("rent to own" OR "lease option") ${baseTail}`),['realtor']);
-  }
-  if(types.includes('distressed')){
-    add('distressed','google','high','Motivated seller sweep','Distressed sellers are more open to terms',`("motivated seller" OR "must sell" OR "estate sale" OR foreclosure OR "pre-foreclosure" OR "price reduced" OR "as-is sale" OR "handyman special") ${baseTail}`,encodeGoogle(`("motivated seller" OR "must sell" OR "estate sale" OR foreclosure OR "pre-foreclosure" OR "price reduced" OR "as-is sale" OR "handyman special") ${baseTail}`),['motivated']);
-    add('distressed','zillow','med','Zillow distressed text search','Searches distressed wording on Zillow pages',`site:zillow.com ("price reduced" OR "as-is" OR foreclosure OR "estate sale") ${baseTail}`,encodeGoogle(`site:zillow.com ("price reduced" OR "as-is" OR foreclosure OR "estate sale") ${baseTail}`),['zillow']);
-    add('distressed','redfin','med','Redfin price drop / fixer search','Targets price cuts and fixer listings',`site:redfin.com ("price reduced" OR "fixer upper" OR foreclosure) ${baseTail}`,encodeGoogle(`site:redfin.com ("price reduced" OR "fixer upper" OR foreclosure) ${baseTail}`),['redfin']);
-    add('distressed','craigslist','high','Craigslist distressed / as-is','Hits direct seller ads using urgency language',`"must sell" OR "as is" OR "fixer upper" ${loc}`,`https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent(`must sell as is fixer upper ${$('city').value||''}`)}`,['craigslist']);
-  }
-  const filtered=templates.filter(t=>sources.includes(t.source));
-  const grouped={assumable:'Assumable Mortgage',subjectto:'Subject-To / Payment Takeover',ownerfinance:'Owner / Seller Finance',rentoown:'Rent-to-Own / Lease Option',distressed:'Distressed / Motivated'};
-  render(filtered,grouped,loc);
-  window.__searches=filtered;
+const $=id=>document.getElementById(id);
+const SRC_LABELS={google:'Google',zillow:'Zillow',redfin:'Redfin',realtor:'Realtor.com',craigslist:'Craigslist',facebook:'Facebook',biggerpockets:'BiggerPockets'};
+const GROUP_LABELS={assumable:'Assumable Mortgage',subjectto:'Subject-To / Payment Takeover',ownerfinance:'Owner / Seller Finance',rentoown:'Rent-to-Own / Lease Option',distressed:'Distressed & Motivated Sellers'};
+
+// Theme
+(function(){
+  const root=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  root.setAttribute('data-theme',d);
+  $('themeBtn').onclick=()=>{d=d==='dark'?'light':'dark';root.setAttribute('data-theme',d)};
+})();
+
+// Payment toggle
+$('payToggle').onchange=function(){
+  const on=this.checked;
+  $('payBanner').className='pay-toggle '+(on?'on':'off');
+  $('payLabel').textContent=on?'💡 Inject payment into searches: ON':'✅ Payment injection: OFF — clean searches';
+  $('payExplain').textContent=on
+    ?'Your max monthly amount will be added as a keyword phrase to searches. Note: listing sites don't have a built-in payment filter — so this searches listing description text for matching phrases. Turn OFF for clean native searches.'
+    :'Searches run clean without payment phrases. Use each site's own price or payment filters directly once you open a search.';
+  run();
+};
+
+// Checkbox chips
+document.querySelectorAll('.chk input').forEach(cb=>{
+  cb.onchange=()=>{cb.closest('.chk').classList.toggle('on',cb.checked);run();};
+});
+
+// Auto-update on any input change
+['fState','fCity','fZip','fPayment','fMaxPrice','fMinPrice','fDown','fBeds','fBaths','fType','fMust','fExclude','fCustom'].forEach(id=>{
+  $(id).addEventListener('input',debounce(run,600));
+});
+$('updateBtn').onclick=run;
+
+function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
+
+function loc(){
+  const parts=[$('fCity').value.trim(),$('fZip').value.trim(),$('fState').value.trim()||'New Jersey'].filter(Boolean);
+  return parts.join(' ');
 }
-function render(items,grouped,loc){
-  $('statTotal').textContent=items.length;
-  $('statHigh').textContent=items.filter(i=>i.priority==='high').length;
-  $('statSources').textContent=new Set(items.map(i=>i.source)).size;
-  $('statTypes').textContent=new Set(items.map(i=>i.type)).size;
-  $('summaryLine').textContent=`${items.length} searches built for ${loc || 'New Jersey'}`;
-  const wrap=$('results');
-  if(!items.length){wrap.innerHTML='<div class="panel" style="padding:1rem">No searches match your current filter set.</div>';return}
-  wrap.innerHTML='';
-  Object.entries(grouped).forEach(([type,label])=>{
-    const groupItems=items.filter(i=>i.type===type); if(!groupItems.length) return;
-    const section=document.createElement('section');
-    section.innerHTML=`<div class="section-label"><span>${label}</span></div><div class="grid"></div>`;
-    const grid=section.querySelector('.grid');
-    groupItems.forEach(item=>{
-      const tags=item.tags.map(t=>`<span class="badge">${t}</span>`).join('');
-      const card=document.createElement('article');
-      card.className='card';
-      card.innerHTML=`
+function gurl(q){return 'https://www.google.com/search?q='+encodeURIComponent(q)}
+function money(v){return Number(v).toLocaleString()}
+
+function payPhrase(){
+  if(!$('payToggle').checked) return '';
+  const p=$('fPayment').value.trim(); if(!p) return '';
+  return `("$${money(p)}/month" OR "$${p}/month" OR "payment $${money(p)}" OR "under $${money(p)} per month" OR "$${money(p)} monthly")`;
+}
+function propPhrase(){
+  const bits=[];
+  const beds=$('fBeds').value; const baths=$('fBaths').value; const type=$('fType').value;
+  if(beds) bits.push(`"${beds.replace('+','')} bedroom" OR "${beds.replace('+','')} bed"`);
+  if(baths) bits.push(`"${baths.replace('+','')} bath"`);
+  if(type) bits.push(`"${type}"`);
+  return bits.join(' ');
+}
+function pricePhrase(){
+  const min=$('fMinPrice').value.trim(), max=$('fMaxPrice').value.trim();
+  const bits=[];
+  if(max) bits.push(`"under $${money(max)}" OR "below $${money(max)}" OR "$${money(max)}"`);
+  if(min) bits.push(`"$${money(min)}"`);
+  return bits.join(' ');
+}
+function extrasPhrase(){
+  const bits=[];
+  const must=$('fMust').value.trim(), excl=$('fExclude').value.trim(), custom=$('fCustom').value.trim(), down=$('fDown').value.trim();
+  if(must) must.split(',').forEach(s=>{const t=s.trim();if(t)bits.push(`"${t}"`)});
+  if(custom) bits.push(`"${custom}"`);
+  if(down) bits.push(`("$${money(down)} down" OR "down payment $${money(down)}" OR "low down")`);
+  const neg=excl?excl.split(',').map(s=>'-"'+s.trim()+'"').join(' '):'';
+  return bits.join(' ')+(neg?' '+neg:'');
+}
+
+function buildList(){
+  const L=loc(), pay=payPhrase(), prop=propPhrase(), price=pricePhrase(), extras=extrasPhrase();
+  const tail=[L,pay,prop,price,extras].filter(Boolean).join(' ');
+  const types=new Set([...document.querySelectorAll('#dealTypes input:checked')].map(i=>i.value));
+  const srcs=new Set([...document.querySelectorAll('#sources input:checked')].map(i=>i.value));
+  const list=[];
+  const add=(type,src,pri,title,desc,query,url,tags)=>{if(types.has(type)&&srcs.has(src))list.push({type,src,pri,title,desc,query,url,tags});};
+
+  // ASSUMABLE
+  add('assumable','google','high','Assumable — master sweep',
+    'Widest assumable signal net across all sources',
+    `(assumable OR "assumable mortgage" OR "mortgage assumption" OR "FHA assumable" OR "VA assumable" OR "USDA assumable" OR "assume existing loan" OR "transferable mortgage") ${tail}`,
+    gurl(`(assumable OR "assumable mortgage" OR "mortgage assumption" OR "FHA assumable" OR "VA assumable" OR "USDA assumable") ${tail}`),
+    ['assumable','FHA','VA','USDA']);
+  add('assumable','google','high','Assumable — 2020–2022 low-rate loans',
+    'Targets loans originated at 2.5–4% — most valuable to assume',
+    `("assumable mortgage" OR "assumable rate" OR "low interest loan") (2020 OR 2021 OR 2022) ${tail}`,
+    gurl(`("assumable mortgage" OR "assumable rate" OR "low interest loan") (2020 OR 2021 OR 2022) ${tail}`),
+    ['low-rate','2020-2022']);
+  add('assumable','zillow','high','Zillow — assumable text search',
+    'Google site search scans Zillow description fields',
+    `site:zillow.com (assumable OR "assumable mortgage" OR "FHA assumable" OR "VA assumable") ${tail}`,
+    gurl(`site:zillow.com (assumable OR "assumable mortgage" OR "FHA assumable" OR "VA assumable") ${tail}`),
+    ['zillow']);
+  add('assumable','redfin','high','Redfin — assumable text search',
+    'Scans Redfin listing descriptions for assumable terms',
+    `site:redfin.com (assumable OR "VA assumable" OR "FHA assumable" OR "loan assumption") ${tail}`,
+    gurl(`site:redfin.com (assumable OR "VA assumable" OR "FHA assumable" OR "loan assumption") ${tail}`),
+    ['redfin']);
+  add('assumable','realtor','high','Realtor.com — assumable scan',
+    'Searches Realtor MLS description text for assumable language',
+    `site:realtor.com (assumable OR "assumable mortgage" OR "assume loan") ${tail}`,
+    gurl(`site:realtor.com (assumable OR "assumable mortgage" OR "assume loan") ${tail}`),
+    ['realtor']);
+  add('assumable','google','med','Assumable — FHA & VA direct search',
+    'FHA and VA loans are the most commonly assumable loan types',
+    `("FHA loan assumable" OR "VA loan assumable" OR "USDA assumable" OR "FHA mortgage assumption") ${tail}`,
+    gurl(`("FHA loan assumable" OR "VA loan assumable" OR "USDA assumable") ${tail}`),
+    ['FHA','VA']);
+
+  // SUBJECT-TO
+  add('subjectto','google','high','Subject-To — master sweep',
+    'Catches subject-to and payment-takeover language across all sites',
+    `("take over payments" OR "takeover payments" OR "subject to existing mortgage" OR "subject-to" OR subto OR "assume payments" OR "keep existing mortgage") ${tail}`,
+    gurl(`("take over payments" OR "takeover payments" OR "subject to existing mortgage" OR "subject-to" OR subto OR "assume payments") ${tail}`),
+    ['subject-to','takeover','subto']);
+  add('subjectto','craigslist','high','Craigslist NJ — payment takeover',
+    'Craigslist is highest-yield for direct payment-takeover listings',
+    `"take over payments" OR "subject to" OR subto ${L}`,
+    `https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent('take over payments subject to '+($('fCity').value||''))}`,
+    ['craigslist','FSBO']);
+  add('subjectto','facebook','high','Facebook Marketplace — payment takeover',
+    'Subject-to deals surface on Facebook more than MLS sites',
+    `"take over payments" OR "subject to" house ${L}`,
+    `https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent('take over payments '+($('fCity').value||''))}`,
+    ['facebook']);
+  add('subjectto','zillow','med','Zillow — subject-to text',
+    'Searches Zillow pages for subject-to financing language',
+    `site:zillow.com ("subject to" OR subto OR "take over payments") ${tail}`,
+    gurl(`site:zillow.com ("subject to" OR subto OR "take over payments") ${tail}`),
+    ['zillow']);
+  add('subjectto','craigslist','high','Craigslist NJ — wrap / seller carry',
+    'Wraparound and seller-carry deals hidden in CL descriptions',
+    `"seller carry" OR "wrap mortgage" OR "wraparound mortgage" OR "seller carries note" ${L}`,
+    `https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent('seller carry wrap mortgage')}`,
+    ['craigslist','wrap']);
+  add('subjectto','google','med','Wrap mortgage / seller carry sweep',
+    'Catches wraparound and seller-carry financing signals',
+    `("wrap mortgage" OR "wraparound mortgage" OR "seller carries note" OR "seller carryback" OR "mortgage wrap") ${tail}`,
+    gurl(`("wrap mortgage" OR "wraparound mortgage" OR "seller carries note" OR "seller carryback") ${tail}`),
+    ['wrap','seller-carry']);
+
+  // OWNER FINANCE
+  add('ownerfinance','google','high','Owner finance — master sweep',
+    'Broadest possible owner/seller finance signal search',
+    `("owner financing" OR "seller financing" OR "seller financed" OR "owner will finance" OR "seller will hold mortgage" OR "private financing" OR "no bank approval" OR "no lender required" OR "in-house financing") ${tail}`,
+    gurl(`("owner financing" OR "seller financing" OR "seller financed" OR "owner will finance" OR "seller will hold mortgage" OR "no bank approval") ${tail}`),
+    ['owner-finance','no-bank']);
+  add('ownerfinance','craigslist','high','Craigslist NJ — owner financing',
+    'Most NJ owner-finance deals appear on Craigslist not MLS',
+    `"owner financing" OR "seller financing" OR "owner financed" ${L}`,
+    `https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent('owner financing seller financing '+($('fCity').value||''))}`,
+    ['craigslist','FSBO']);
+  add('ownerfinance','facebook','high','Facebook — owner / seller finance',
+    'FB Marketplace has creative deals that never hit MLS',
+    `"owner financing" OR "seller financing" house ${L}`,
+    `https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent('owner financing '+($('fCity').value||''))}`,
+    ['facebook']);
+  add('ownerfinance','zillow','med','Zillow — seller finance text search',
+    'Searches Zillow listing descriptions for seller-carry language',
+    `site:zillow.com ("owner financing" OR "seller financing" OR "seller financed") ${tail}`,
+    gurl(`site:zillow.com ("owner financing" OR "seller financing" OR "seller financed") ${tail}`),
+    ['zillow']);
+  add('ownerfinance','redfin','med','Redfin — seller finance text search',
+    'Scans Redfin descriptions for owner-finance language',
+    `site:redfin.com ("owner financing" OR "seller financing" OR "owner will finance") ${tail}`,
+    gurl(`site:redfin.com ("owner financing" OR "seller financing" OR "owner will finance") ${tail}`),
+    ['redfin']);
+  add('ownerfinance','biggerpockets','high','BiggerPockets NJ — creative finance',
+    'Investors post off-market SubTo and owner-finance deals here',
+    `site:biggerpockets.com ("owner financing" OR "subject to" OR assumable) ${L}`,
+    gurl(`site:biggerpockets.com ("owner financing" OR "subject to" OR assumable) ${L}`),
+    ['biggerpockets','off-market']);
+  add('ownerfinance','realtor','med','Realtor.com — seller finance text',
+    'Searches Realtor descriptions for seller-carry language',
+    `site:realtor.com ("owner financing" OR "seller financing" OR "seller carries") ${tail}`,
+    gurl(`site:realtor.com ("owner financing" OR "seller financing") ${tail}`),
+    ['realtor']);
+
+  // RENT TO OWN
+  add('rentoown','google','high','Rent-to-own — master sweep',
+    'Widest rent-to-own and lease-option signal search',
+    `("rent to own" OR "rent-to-own" OR "lease option" OR "lease purchase" OR "option to buy" OR "lease with option" OR "lease takeover" OR "lease assignment") ${tail}`,
+    gurl(`("rent to own" OR "rent-to-own" OR "lease option" OR "lease purchase" OR "option to buy" OR "lease with option") ${tail}`),
+    ['rent-to-own','lease-option']);
+  add('rentoown','craigslist','high','Craigslist NJ — rent-to-own',
+    'Craigslist surfaces lease-option deals not on MLS',
+    `"rent to own" OR "lease option" OR "lease purchase" ${L}`,
+    `https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent('rent to own lease option '+($('fCity').value||''))}`,
+    ['craigslist']);
+  add('rentoown','facebook','med','Facebook — rent-to-own / lease option',
+    'Facebook listings with lease-option and RTO language',
+    `"rent to own" OR "lease option" house ${L}`,
+    `https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent('rent to own '+($('fCity').value||''))}`,
+    ['facebook']);
+  add('rentoown','realtor','med','Realtor.com — lease option text search',
+    'Some MLS entries have lease-option language in descriptions',
+    `site:realtor.com ("lease option" OR "rent to own" OR "lease purchase") ${tail}`,
+    gurl(`site:realtor.com ("lease option" OR "rent to own" OR "lease purchase") ${tail}`),
+    ['realtor']);
+  add('rentoown','zillow','med','Zillow — lease option text search',
+    'Searches Zillow descriptions for rent-to-own terms',
+    `site:zillow.com ("rent to own" OR "lease option" OR "lease purchase") ${tail}`,
+    gurl(`site:zillow.com ("rent to own" OR "lease option" OR "lease purchase") ${tail}`),
+    ['zillow']);
+
+  // DISTRESSED
+  add('distressed','google','high','Motivated seller — master sweep',
+    'Distressed sellers are most open to creative payment terms',
+    `("motivated seller" OR "must sell" OR "estate sale" OR "price reduced" OR "as-is" OR "handyman special" OR "fixer upper" OR "pre-foreclosure" OR foreclosure OR "short sale") ${tail}`,
+    gurl(`("motivated seller" OR "must sell" OR "estate sale" OR "price reduced" OR "as-is" OR "handyman special" OR "fixer upper" OR "pre-foreclosure" OR foreclosure) ${tail}`),
+    ['motivated','distressed']);
+  add('distressed','zillow','med','Zillow — pre-foreclosure filter',
+    'Zillow pre-foreclosure listings have highest assumable overlap',
+    `site:zillow.com (foreclosure OR "pre-foreclosure" OR "price reduced" OR "estate sale") ${tail}`,
+    'https://www.zillow.com/nj/?searchQueryState=%7B%22filterState%22%3A%7B%22fore%22%3A%7B%22value%22%3Atrue%7D%7D%7D',
+    ['zillow','pre-foreclosure']);
+  add('distressed','redfin','med','Redfin — price drop listings',
+    'Price-reduced listings signal motivated sellers open to terms',
+    `site:redfin.com ("price reduced" OR "price drop" OR "fixer" OR foreclosure) ${tail}`,
+    'https://www.redfin.com/state/New-Jersey/filter/price-reductions',
+    ['redfin','price-drop']);
+  add('distressed','craigslist','high','Craigslist NJ — as-is / must sell',
+    'Direct seller ads using urgency and distressed language',
+    `"must sell" OR "as is" OR "fixer upper" OR "handyman special" OR "price reduced" ${L}`,
+    `https://newjersey.craigslist.org/search/rea?query=${encodeURIComponent('must sell as is fixer upper price reduced '+($('fCity').value||''))}`,
+    ['craigslist','as-is']);
+  add('distressed','facebook','med','Facebook — motivated seller NJ',
+    'Facebook posts with distressed / must-sell language',
+    `"motivated seller" OR "must sell" OR "as is" house ${L}`,
+    `https://www.facebook.com/marketplace/newjersey/propertyforsale?query=${encodeURIComponent('motivated seller must sell '+($('fCity').value||''))}`,
+    ['facebook']);
+  add('distressed','google','med','Pre-foreclosure & short sale sweep',
+    'Pre-foreclosure owners often accept creative financing terms',
+    `("pre-foreclosure" OR "short sale" OR "bank owned" OR REO OR "foreclosure sale") ${tail}`,
+    gurl(`("pre-foreclosure" OR "short sale" OR "bank owned" OR REO OR "foreclosure sale") ${tail}`),
+    ['pre-foreclosure','short-sale','REO']);
+
+  return list;
+}
+
+function run(){
+  const list=buildList();
+  $('sTotal').textContent=list.length;
+  $('sHigh').textContent=list.filter(i=>i.pri==='high').length;
+  $('sSources').textContent=new Set(list.map(i=>i.src)).size;
+  $('sTypes').textContent=new Set(list.map(i=>i.type)).size;
+  const out=$('results');
+  if(!list.length){out.innerHTML='<p style="color:var(--muted);padding:1rem">No searches match. Try enabling more deal types or sources.</p>';return}
+  out.innerHTML='';
+  const order=['assumable','subjectto','ownerfinance','rentoown','distressed'];
+  order.forEach(type=>{
+    const items=list.filter(i=>i.type===type);
+    if(!items.length) return;
+    const sec=document.createElement('div');
+    sec.innerHTML=`<div class="section-div"><span>${GROUP_LABELS[type]}</span></div><div class="grid"></div>`;
+    const grid=sec.querySelector('.grid');
+    items.forEach(item=>{
+      const el=document.createElement('div');
+      el.className='card';
+      const tags=item.tags.map(t=>`<span class="bdg">${t}</span>`).join('');
+      el.innerHTML=`
         <div class="card-top">
           <h4>${item.title}</h4>
-          <div class="badges"><span class="badge ${item.source}">${sourceLabels[item.source]||item.source}</span><span class="badge ${item.priority==='high'?'high':''}">${item.priority}</span></div>
+          <div class="badges">
+            <span class="bdg ${item.src}">${SRC_LABELS[item.src]}</span>
+            <span class="bdg ${item.pri==='high'?'high':''}">${item.pri==='high'?'High ⬆':'Med'}</span>
+          </div>
         </div>
-        <p class="desc">${item.desc}</p>
+        <p class="card-desc">${item.desc}</p>
         <div class="badges">${tags}</div>
-        <div class="query">${escapeHtml(item.query)}</div>
-        <div class="card-actions">
-          <a class="open" href="${item.url}" target="_blank" rel="noopener noreferrer">Open search</a>
-          <button class="copy" data-q="${encodeURIComponent(item.query)}">Copy</button>
+        <div class="qblock">${item.query.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <div class="card-btns">
+          <a class="open-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">Open search →</a>
+          <button class="copy-btn">Copy</button>
         </div>`;
-      card.querySelector('.copy').onclick=(e)=>{navigator.clipboard.writeText(decodeURIComponent(e.currentTarget.dataset.q)); e.currentTarget.textContent='Copied'; setTimeout(()=>e.currentTarget.textContent='Copy',1200)};
-      grid.appendChild(card);
+      el.querySelector('.copy-btn').onclick=function(){
+        navigator.clipboard.writeText(item.query);
+        this.textContent='Copied ✓';this.classList.add('done');
+        setTimeout(()=>{this.textContent='Copy';this.classList.remove('done')},1500);
+      };
+      grid.appendChild(el);
     });
-    wrap.appendChild(section);
+    out.appendChild(sec);
   });
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-$('buildBtn').onclick=buildSearches;
-$('openAllBtn').onclick=()=>{const items=(window.__searches||[]).filter(i=>i.priority==='high').slice(0,8); items.forEach((i,idx)=>setTimeout(()=>window.open(i.url,'_blank'),idx*250));};
-$('resetBtn').onclick=()=>{Object.entries(stateDefaults).forEach(([k,v])=>$(k).value=v); document.querySelectorAll('#typesWrap input,#sourcesWrap input').forEach(i=>i.checked=true); buildSearches();};
 
-function updatePayToggleUI(){
-  const on = $('payInjectToggle').checked;
-  const banner = $('payLimitBanner');
-  banner.className = (on ? 'limit-on' : 'limit-off') + ' limit-banner';
-  $('payToggleLabel').textContent = on
-    ? '💡 Payment keyword injection: ON'
-    : '✅ Payment keyword injection: OFF — using clean searches';
-  $('payToggleExplain').innerHTML = on
-    ? 'Monthly payment amounts are injected as keyword phrases into Google queries. <strong>Limit:</strong> listing sites don't expose "monthly payment" as a structured filter — so this searches description text for matching phrases. Results vary. Turn OFF to run clean native searches.'
-    : 'Searches will run without payment phrase injection. Each listing site's own native filters will be your primary way to filter by price or payment. Turn ON if you want payment keyword phrases injected into search queries automatically.';
-}
-$('payInjectToggle').addEventListener('change', ()=>{ updatePayToggleUI(); buildSearches(); });
-updatePayToggleUI(); themeInit(); buildSearches();
+run();
 </script>
 </body>
 </html>
