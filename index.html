@@ -72,6 +72,18 @@
     .section-label::before,.section-label::after{content:"";height:1px;background:var(--color-divider);flex:1}
     .section-label span{font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-faint)}
     .mini{font-size:var(--text-xs);color:var(--color-text-faint)}
+
+    .limit-banner{margin:var(--space-3) 0 0;padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);font-size:var(--text-xs);line-height:1.5;display:flex;flex-direction:column;gap:var(--space-2)}
+    .limit-on{background:oklch(from var(--color-gold) l c h / .1);border:1px solid oklch(from var(--color-gold) l c h / .25);color:var(--color-text-muted)}
+    .limit-off{background:oklch(from var(--color-success) l c h / .1);border:1px solid oklch(from var(--color-success) l c h / .25);color:var(--color-text-muted)}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3)}
+    .toggle-label{font-weight:700;font-size:var(--text-sm)}
+    .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;background:var(--color-border);border-radius:999px;cursor:pointer;transition:background var(--transition)}
+    .toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform var(--transition)}
+    .toggle-switch input:checked + .toggle-track{background:var(--color-gold)}
+    .toggle-switch input:checked + .toggle-track::after{transform:translateX(20px)}
     @media (max-width: 900px){.layout{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid var(--color-border)}.stats{grid-template-columns:repeat(2,1fr)}.content,.sidebar{padding:var(--space-4)}}
   </style>
 </head>
@@ -107,6 +119,17 @@
           <div class="field"><label>Min price</label><input id="minPrice" type="number" placeholder="100000"></div>
           <div class="field"><label>Down payment max</label><input id="maxDown" type="number" placeholder="30000"></div>
         </div>
+      </div>
+
+      <div class="limit-on limit-banner" id="payLimitBanner">
+        <div class="toggle-row">
+          <span class="toggle-label" id="payToggleLabel">💡 Payment keyword injection: ON</span>
+          <label class="toggle-switch" title="Toggle payment phrase injection">
+            <input type="checkbox" id="payInjectToggle" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <span id="payToggleExplain">Monthly payment amounts will be injected as keyword phrases into every Google search query. <strong>Important limit:</strong> listing sites (Zillow, Redfin, etc.) do not expose "monthly payment" as a structured filter field — so this works by searching description text for matching phrases. Results will vary. Turn OFF to run clean searches and use each site's own native price/payment filters manually.</span>
       </div>
       <div class="group">
         <h3>Property Filters</h3>
@@ -178,7 +201,11 @@ function themeInit(){const root=document.documentElement;let d=matchMedia('(pref
 function getCheckedValues(wrapperId){return [...document.querySelectorAll(`#${wrapperId} input:checked`)].map(i=>i.value)}
 function money(v){if(!v)return '';return Number(v).toLocaleString()}
 function locationText(){const parts=[$('city').value.trim(), $('zip').value.trim(), $('location').value.trim()].filter(Boolean); return parts.join(' ')}
-function paymentPhrase(){const p=$('maxPayment').value.trim(); if(!p) return ''; const n=money(p); return `("$${p}/month" OR "$${n}/month" OR "$${p} monthly" OR "$${n} monthly" OR "payment under $${p}" OR "payment less than $${p}")`;}
+function paymentPhrase(){
+  if(!$('payInjectToggle').checked) return '';
+  const p=$('maxPayment').value.trim(); if(!p) return '';
+  const n=money(p);
+  return `("$${p}/month" OR "$${n}/month" OR "$${p} monthly" OR "$${n} monthly" OR "payment under $${p}" OR "payment less than $${p}")`;}
 function pricePhrase(){const min=$('minPrice').value.trim(), max=$('maxPrice').value.trim(); let parts=[]; if(min) parts.push(`"$${money(min)}"`); if(max) parts.push(`"$${money(max)}" OR "under $${money(max)}" OR "below $${money(max)}"`); return parts.join(' ')}
 function propPhrase(){const bits=[]; if($('beds').value) bits.push(`"${$('beds').value}+ bed" OR "${$('beds').value} bedroom"`); if($('baths').value) bits.push(`"${$('baths').value}+ bath" OR "${$('baths').value} bathroom"`); if($('ptype').value) bits.push(`"${$('ptype').value}"`); if($('sizeKeyword').value.trim()) bits.push(`"${$('sizeKeyword').value.trim()}"`); return bits.join(' ')}
 function extrasPhrase(){const bits=[]; if($('mustHave').value.trim()) bits.push($('mustHave').value.trim().split(',').map(s=>`"${s.trim()}"`).join(' OR ')); if($('customPhrase').value.trim()) bits.push(`"${$('customPhrase').value.trim()}"`); if($('maxDown').value.trim()) bits.push(`("low down payment" OR "minimal down payment" OR "down payment $${money($('maxDown').value.trim())}" OR "$${money($('maxDown').value.trim())} down")`); return bits.join(' ')}
@@ -267,7 +294,20 @@ function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','
 $('buildBtn').onclick=buildSearches;
 $('openAllBtn').onclick=()=>{const items=(window.__searches||[]).filter(i=>i.priority==='high').slice(0,8); items.forEach((i,idx)=>setTimeout(()=>window.open(i.url,'_blank'),idx*250));};
 $('resetBtn').onclick=()=>{Object.entries(stateDefaults).forEach(([k,v])=>$(k).value=v); document.querySelectorAll('#typesWrap input,#sourcesWrap input').forEach(i=>i.checked=true); buildSearches();};
-themeInit(); buildSearches();
+
+function updatePayToggleUI(){
+  const on = $('payInjectToggle').checked;
+  const banner = $('payLimitBanner');
+  banner.className = (on ? 'limit-on' : 'limit-off') + ' limit-banner';
+  $('payToggleLabel').textContent = on
+    ? '💡 Payment keyword injection: ON'
+    : '✅ Payment keyword injection: OFF — using clean searches';
+  $('payToggleExplain').innerHTML = on
+    ? 'Monthly payment amounts are injected as keyword phrases into Google queries. <strong>Limit:</strong> listing sites don't expose "monthly payment" as a structured filter — so this searches description text for matching phrases. Results vary. Turn OFF to run clean native searches.'
+    : 'Searches will run without payment phrase injection. Each listing site's own native filters will be your primary way to filter by price or payment. Turn ON if you want payment keyword phrases injected into search queries automatically.';
+}
+$('payInjectToggle').addEventListener('change', ()=>{ updatePayToggleUI(); buildSearches(); });
+updatePayToggleUI(); themeInit(); buildSearches();
 </script>
 </body>
 </html>
