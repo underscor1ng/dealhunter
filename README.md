@@ -51,7 +51,7 @@ How to Use It
 No account. No signup. No download. It works in your browser on any device.
 
 **2. Set your location.**
-Type your city, county, or ZIP code. Autocomplete is built in for all of New Jersey. Leave it broad or get hyper-specific — your call.
+Type your city, county, or ZIP code. Leave it broad or get hyper-specific — your call.
 
 **3. Choose your strictness level.**
 This controls how tightly the results are filtered to active listings only:
