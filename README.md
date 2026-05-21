@@ -9,7 +9,7 @@ Most people searching for a home in don't know that some of those homes can be a
 
 What Is This?
 
-NJ Deal Hunter is a one-of-a-kind search tool built specifically for New Jersey that surfaces homes where the seller is open to **creative terms** — meaning you may be able to step into their existing mortgage, negotiate payments directly, or get into a home with far less friction than the traditional route requires.
+Deal Hunter is a one-of-a-kind search tool built specifically for New Jersey that surfaces homes where the seller is open to **creative terms** — meaning you may be able to step into their existing mortgage, negotiate payments directly, or get into a home with far less friction than the traditional route requires.
 
 It searches across every major listing platform at once and brings back only what matters: actual property listings, nothing else.
 
